@@ -1,6 +1,12 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 
+ext {
+    PUBLISH_GROUP_ID = 'com.petarmarijanovic'
+    PUBLISH_ARTIFACT_ID = 'rx-bluetooth-rxjava1-kotlin'
+    PUBLISH_VERSION = '0.1.0'
+}
+
 android {
     compileSdkVersion 25
     buildToolsVersion "25.0.3"
@@ -38,3 +44,6 @@ dependencies {
 repositories {
     mavenCentral()
 }
+
+// ./gradlew clean build generateRelease
+apply from: 'https://raw.githubusercontent.com/blundell/release-android-library/master/android-release-aar.gradle'
