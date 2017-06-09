@@ -17,7 +17,7 @@ class RxBluetoothFragment : Fragment() {
     private val REQUEST_CODE = 42
   }
   
-  private val bleEnableResultSubject = PublishSubject.create<Int>()
+  private val bluetoothEnableResultSubject = PublishSubject.create<Int>()
   
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -28,12 +28,12 @@ class RxBluetoothFragment : Fragment() {
     if (isBluetoothEnabled()) return Observable.just(RESULT_OK)
     
     startActivityForResult(Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE), REQUEST_CODE)
-    return bleEnableResultSubject.first()
+    return bluetoothEnableResultSubject.first()
   }
   
   override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
     if (requestCode != REQUEST_CODE) return
-    bleEnableResultSubject.onNext(resultCode)
+    bluetoothEnableResultSubject.onNext(resultCode)
   }
   
   private fun isBluetoothEnabled(): Boolean {
