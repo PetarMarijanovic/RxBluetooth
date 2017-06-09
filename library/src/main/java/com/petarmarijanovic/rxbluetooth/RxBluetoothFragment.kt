@@ -10,7 +10,6 @@ import android.os.Bundle
 import rx.Observable
 import rx.subjects.PublishSubject
 
-
 /** Created by petar on 08/06/2017. */
 class RxBluetoothFragment : Fragment() {
   
@@ -26,21 +25,21 @@ class RxBluetoothFragment : Fragment() {
   }
   
   fun enableBluetooth(): Observable<Int> {
-    val bluetoothManager = activity.getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager
+    if (isBluetoothEnabled()) return Observable.just(RESULT_OK)
     
-    val bluetoothAdapter = bluetoothManager.adapter
-    
-    if (bluetoothAdapter == null || !bluetoothAdapter.isEnabled) {
-      activity.startActivityForResult(Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE), REQUEST_CODE)
-    } else {
-      bleEnableResultSubject.onNext(RESULT_OK)
-    }
-    
-    return bleEnableResultSubject.asObservable()
+    startActivityForResult(Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE), REQUEST_CODE)
+    return bleEnableResultSubject.first()
   }
   
-  override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) {
+  override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
     if (requestCode != REQUEST_CODE) return
     bleEnableResultSubject.onNext(resultCode)
+  }
+  
+  private fun isBluetoothEnabled(): Boolean {
+    val bluetoothManager = activity.getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager
+    val bluetoothAdapter = bluetoothManager.adapter
+    
+    return bluetoothAdapter != null && bluetoothAdapter.isEnabled
   }
 }
